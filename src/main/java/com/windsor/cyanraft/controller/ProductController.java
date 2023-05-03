@@ -1,5 +1,6 @@
 package com.windsor.cyanraft.controller;
 
+import com.windsor.cyanraft.constant.ProductCategory;
 import com.windsor.cyanraft.dto.ProductRequest;
 import com.windsor.cyanraft.model.Product;
 import com.windsor.cyanraft.service.ProductService;
@@ -19,8 +20,10 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<Product>> getProducts() {
-        List<Product> productList = productService.getProducts();
+    public ResponseEntity<List<Product>> getProducts(
+            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) String search) {
+        List<Product> productList = productService.getProducts(category, search);
 
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }

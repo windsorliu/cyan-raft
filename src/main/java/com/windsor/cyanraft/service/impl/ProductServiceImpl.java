@@ -1,5 +1,6 @@
 package com.windsor.cyanraft.service.impl;
 
+import com.windsor.cyanraft.constant.ProductCategory;
 import com.windsor.cyanraft.dao.ProductDao;
 import com.windsor.cyanraft.dto.ProductRequest;
 import com.windsor.cyanraft.model.Product;
@@ -16,8 +17,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
 
     @Override
-    public List<Product> getProducts() {
-        return productDao.getProducts();
+    public List<Product> getProducts(ProductCategory category, String search) {
+        return productDao.getProducts(category, search);
     }
 
     @Override
