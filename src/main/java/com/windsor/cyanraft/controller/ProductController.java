@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -16,6 +17,13 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @GetMapping
+    public ResponseEntity<List<Product>> getProducts() {
+        List<Product> productList = productService.getProducts();
+
+        return ResponseEntity.status(HttpStatus.OK).body(productList);
+    }
 
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable Integer productId) {
