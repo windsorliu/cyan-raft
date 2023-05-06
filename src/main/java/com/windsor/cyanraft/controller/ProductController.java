@@ -60,7 +60,6 @@ public class ProductController {
         page.setTotal(total);
         page.setResults(productList);
 
-
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
@@ -96,11 +95,9 @@ public class ProductController {
 
         productService.updateProduct(productId, productRequest);
 
-
         Product updatedProduct = productService.getProductById(productId);
 
         return ResponseEntity.status(HttpStatus.OK).body(updatedProduct);
-
     }
 
     @DeleteMapping("/{productId}")
@@ -110,5 +107,4 @@ public class ProductController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 }
