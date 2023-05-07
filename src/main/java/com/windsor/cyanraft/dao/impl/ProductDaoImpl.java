@@ -59,7 +59,6 @@ public class ProductDaoImpl implements ProductDao {
 
         Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
 
-
         return total;
     }
 
