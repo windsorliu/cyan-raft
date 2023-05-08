@@ -1,6 +1,7 @@
 package com.windsor.cyanraft.service.impl;
 
 import com.windsor.cyanraft.dao.UserDao;
+import com.windsor.cyanraft.dto.UserLoginRequest;
 import com.windsor.cyanraft.dto.UserRegisterRequest;
 import com.windsor.cyanraft.model.User;
 import com.windsor.cyanraft.service.UserService;
@@ -36,5 +37,22 @@ public class UserServiceImpl implements UserService {
 
         //創建帳號
         return userDao.createUser(userRegisterRequest);
+    }
+
+    @Override
+    public User login(UserLoginRequest userLoginRequest) {
+        User user = userDao.getUserByEmail(userLoginRequest.getEmail());
+
+        if (user == null) {
+            log.warn("The email: {} has not been registered yet", userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        if (user.getPassword().equals(userLoginRequest.getPassword())) {
+            return user;
+        } else {
+            log.warn("email: {} wrong password", userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 }

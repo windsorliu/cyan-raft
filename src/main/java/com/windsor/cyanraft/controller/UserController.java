@@ -1,5 +1,6 @@
 package com.windsor.cyanraft.controller;
 
+import com.windsor.cyanraft.dto.UserLoginRequest;
 import com.windsor.cyanraft.dto.UserRegisterRequest;
 import com.windsor.cyanraft.model.User;
 import com.windsor.cyanraft.service.UserService;
@@ -28,5 +29,13 @@ public class UserController {
         User user = userService.getUserById(userId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
+
+        User user = userService.login(userLoginRequest);
+
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }
