@@ -67,12 +67,7 @@ public class ProductControllerTest {
         productRequest.setPrice(100);
         productRequest.setStock(2);
 
-        String json = objectMapper.writeValueAsString(productRequest);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/products")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
+        RequestBuilder requestBuilder = post(productRequest);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(201))
@@ -92,15 +87,19 @@ public class ProductControllerTest {
         ProductRequest productRequest = new ProductRequest();
         productRequest.setProductName("test food product");
 
-        String json = objectMapper.writeValueAsString(productRequest);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/products")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
+        RequestBuilder requestBuilder = post(productRequest);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
+    }
+
+    private RequestBuilder post(ProductRequest productRequest) throws Exception {
+        String json = objectMapper.writeValueAsString(productRequest);
+
+        return MockMvcRequestBuilders
+                .post("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
     }
 
     // 更新商品
@@ -114,12 +113,7 @@ public class ProductControllerTest {
         productRequest.setPrice(100);
         productRequest.setStock(2);
 
-        String json = objectMapper.writeValueAsString(productRequest);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/products/{productId}", 3)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
+        RequestBuilder requestBuilder = put(productRequest, 3);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
@@ -139,12 +133,7 @@ public class ProductControllerTest {
         ProductRequest productRequest = new ProductRequest();
         productRequest.setProductName("test food product");
 
-        String json = objectMapper.writeValueAsString(productRequest);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/products/{productId}", 3)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
+        RequestBuilder requestBuilder = put(productRequest, 3);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
@@ -156,19 +145,23 @@ public class ProductControllerTest {
         ProductRequest productRequest = new ProductRequest();
         productRequest.setProductName("test food product");
         productRequest.setCategory(ProductCategory.FOOD);
-        productRequest.setImageUrl("http://test.com");
+        productRequest.setImageUrl("https://test.com");
         productRequest.setPrice(100);
         productRequest.setStock(2);
 
-        String json = objectMapper.writeValueAsString(productRequest);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/products/{productId}", 20000)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
+        RequestBuilder requestBuilder = put(productRequest, 20000);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404));
+    }
+
+    private RequestBuilder put(ProductRequest productRequest, Integer productId) throws Exception {
+        String json = objectMapper.writeValueAsString(productRequest);
+
+        return MockMvcRequestBuilders
+                .put("/products/{productId}", productId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
     }
 
     // 刪除商品
