@@ -4,6 +4,7 @@ import com.windsor.cyanraft.dao.OrderDao;
 import com.windsor.cyanraft.dao.ProductDao;
 import com.windsor.cyanraft.dto.BuyItem;
 import com.windsor.cyanraft.dto.CreateOrderRequest;
+import com.windsor.cyanraft.model.Order;
 import com.windsor.cyanraft.model.OrderItem;
 import com.windsor.cyanraft.model.Product;
 import com.windsor.cyanraft.service.OrderService;
@@ -28,6 +29,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private ProductDao productDao;
+
+    @Override
+    public Order getOrderById(Integer orderId) {
+        Order order = orderDao.getOrderById(orderId);
+
+        List<OrderItem> orderItemList = orderDao.getOrderItemsByOrderId(orderId);
+
+        order.setOrderItemList(orderItemList);
+
+        return order;
+    }
 
     @Override
     @Transactional
