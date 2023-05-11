@@ -74,9 +74,9 @@ public class ProductDaoImpl implements ProductDao {
 
         if (productList.isEmpty()) {
             return null;
-        } else {
-            return productList.get(0);
         }
+
+        return productList.get(0);
     }
 
     @Override

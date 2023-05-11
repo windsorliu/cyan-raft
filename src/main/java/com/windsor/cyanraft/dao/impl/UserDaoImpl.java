@@ -45,9 +45,9 @@ public class UserDaoImpl implements UserDao {
 
         if (userList.isEmpty()) {
             return null;
-        } else {
-            return userList.get(0);
         }
+
+        return userList.get(0);
     }
 
     @Override
