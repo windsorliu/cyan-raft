@@ -5,6 +5,7 @@ import com.windsor.cyanraft.dao.ProductDao;
 import com.windsor.cyanraft.dao.UserDao;
 import com.windsor.cyanraft.dto.BuyItem;
 import com.windsor.cyanraft.dto.CreateOrderRequest;
+import com.windsor.cyanraft.dto.OrderQueryParams;
 import com.windsor.cyanraft.model.Order;
 import com.windsor.cyanraft.model.OrderItem;
 import com.windsor.cyanraft.model.Product;
@@ -36,6 +37,34 @@ public class OrderServiceImpl implements OrderService {
     private ProductDao productDao;
 
     @Override
+    public void isUserExist(Integer userId) {
+        User user = userDao.getUserById(userId);
+
+        if (user == null) {
+            log.warn("The user {} does not exist", userId);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public Integer countOrder(OrderQueryParams orderQueryParams) {
+        return orderDao.countOrder(orderQueryParams);
+    }
+
+    @Override
+    public List<Order> getOrders(OrderQueryParams orderQueryParams) {
+        List<Order> orderList = orderDao.getOrders(orderQueryParams);
+
+        for (Order order : orderList) {
+            List<OrderItem> orderItemList = orderDao.getOrderItemsByOrderId(order.getOrderId());
+
+            order.setOrderItemList(orderItemList);
+        }
+
+        return orderList;
+    }
+
+    @Override
     public Order getOrderById(Integer orderId) {
         Order order = orderDao.getOrderById(orderId);
 
@@ -49,14 +78,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Integer createOrder(Integer userId, CreateOrderRequest createOrderRequest) {
-        // 檢查user是否存在
-        User user = userDao.getUserById(userId);
-
-        if (user == null) {
-            log.warn("The user {} does not exist", userId);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-
         int totalAmount = 0;
         List<OrderItem> orderItemList = new ArrayList<>();
 
