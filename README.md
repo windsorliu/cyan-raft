@@ -1,4 +1,4 @@
-** 使用的技術
+## 使用的技術
 
 1. Spring Boot: 2.3.7.RELEASE
 2. MySQL: 5.7.35
