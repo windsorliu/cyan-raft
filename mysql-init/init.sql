@@ -1,3 +1,59 @@
+-- 設置字符集和校對
+SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
+
+-- 刪除現有資料庫（如果存在）
+DROP DATABASE IF EXISTS mall;
+
+-- 創建新的資料庫
+CREATE DATABASE mall;
+
+-- 使用新資料庫
+USE mall;
+
+-- product
+CREATE TABLE product
+(
+    product_id         INT          NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    product_name       VARCHAR(128) NOT NULL,
+    category           VARCHAR(32)  NOT NULL,
+    image_url          VARCHAR(256) NOT NULL,
+    price              INT          NOT NULL,
+    stock              INT          NOT NULL,
+    description        VARCHAR(1024),
+    created_date       TIMESTAMP    default CURRENT_TIMESTAMP NOT NULL,
+    last_modified_date TIMESTAMP    default CURRENT_TIMESTAMP NOT NULL on update CURRENT_TIMESTAMP
+);
+
+-- user
+CREATE TABLE user
+(
+    user_id            INT          NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    email              VARCHAR(256) NOT NULL UNIQUE KEY,
+    password           VARCHAR(256) NOT NULL,
+    created_date       TIMESTAMP    default CURRENT_TIMESTAMP NOT NULL,
+    last_modified_date TIMESTAMP    default CURRENT_TIMESTAMP NOT NULL on update CURRENT_TIMESTAMP
+);
+
+-- order
+CREATE TABLE `order`
+(
+    order_id           INT       NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    user_id            INT       NOT NULL,
+    total_amount       INT       NOT NULL, -- 訂單總花費
+    created_date       TIMESTAMP    default CURRENT_TIMESTAMP NOT NULL,
+    last_modified_date TIMESTAMP    default CURRENT_TIMESTAMP NOT NULL on update CURRENT_TIMESTAMP
+);
+
+-- order_item
+CREATE TABLE order_item
+(
+    order_item_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    order_id      INT NOT NULL,
+    product_id    INT NOT NULL,
+    quantity      INT NOT NULL, -- 商品數量
+    amount        INT NOT NULL  -- 商品花費
+);
+
 -- product
 INSERT INTO product (product_name, category, image_url, price, stock, description, created_date, last_modified_date) VALUES ('蘋果', 'FOOD', 'https://cdn.pixabay.com/photo/2014/02/01/17/28/apple-256261__480.jpg', 20, 10, '這是來自澳洲的蘋果！', '2022-03-01 02:41:28', '2022-03-01 02:41:32');
 INSERT INTO product (product_name, category, image_url, price, stock, description, created_date, last_modified_date) VALUES ('蘋果（澳洲）', 'FOOD', 'https://cdn.pixabay.com/photo/2016/11/30/15/00/apples-1872997_1280.jpg', 30, 10, '這是來自澳洲的蘋果！', '2022-03-19 17:00:00', '2022-03-22 18:00:00');
