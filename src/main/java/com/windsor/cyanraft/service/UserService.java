@@ -6,9 +6,9 @@ import com.windsor.cyanraft.model.User;
 
 public interface UserService {
 
-    User getUserById(Integer userId);
+  User getUserById(Integer userId);
 
-    Integer register(UserRegisterRequest userRegisterRequest);
+  Integer register(UserRegisterRequest userRegisterRequest);
 
-    User login(UserLoginRequest userLoginRequest);
+  User login(UserLoginRequest userLoginRequest);
 }
