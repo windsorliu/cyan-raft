@@ -4,6 +4,9 @@ import com.windsor.cyanraft.dao.UserDao;
 import com.windsor.cyanraft.dto.UserRegisterRequest;
 import com.windsor.cyanraft.model.User;
 import com.windsor.cyanraft.rowmapper.UserRowMapper;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -11,59 +14,56 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @Repository
 public class UserDaoImpl implements UserDao {
 
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+  @Autowired private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    @Override
-    public User getUserById(Integer userId) {
-        String sql = "SELECT user_id, email, password, created_date, last_modified_date " +
-                "FROM user WHERE user_id = :userId";
+  @Override
+  public User getUserById(Integer userId) {
+    String sql =
+        "SELECT user_id, email, password, created_date, last_modified_date "
+            + "FROM user WHERE user_id = :userId";
 
-        return getUser(sql, "userId", userId);
+    return getUser(sql, "userId", userId);
+  }
+
+  @Override
+  public User getUserByEmail(String email) {
+    String sql =
+        "SELECT user_id, email, password, created_date, last_modified_date "
+            + "FROM user WHERE email = :email";
+
+    return getUser(sql, "email", email);
+  }
+
+  private User getUser(String sql, String key, Object value) {
+    Map<String, Object> map = new HashMap<>();
+    map.put(key, value);
+
+    List<User> userList = namedParameterJdbcTemplate.query(sql, map, new UserRowMapper());
+
+    if (userList.isEmpty()) {
+      return null;
     }
 
-    @Override
-    public User getUserByEmail(String email) {
-        String sql = "SELECT user_id, email, password, created_date, last_modified_date " +
-                "FROM user WHERE email = :email";
+    return userList.get(0);
+  }
 
-        return getUser(sql, "email", email);
-    }
+  @Override
+  public Integer createUser(UserRegisterRequest userRegisterRequest) {
+    String sql = "INSERT INTO user(email, password) VALUES (:email, :password)";
 
-    private User getUser(String sql, String key, Object value) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(key, value);
+    Map<String, Object> map = new HashMap<>();
+    map.put("email", userRegisterRequest.getEmail());
+    map.put("password", userRegisterRequest.getPassword());
 
-        List<User> userList = namedParameterJdbcTemplate.query(sql, map, new UserRowMapper());
+    KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        if (userList.isEmpty()) {
-            return null;
-        }
+    namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
 
-        return userList.get(0);
-    }
+    Integer userId = keyHolder.getKey().intValue();
 
-    @Override
-    public Integer createUser(UserRegisterRequest userRegisterRequest) {
-        String sql = "INSERT INTO user(email, password) VALUES (:email, :password)";
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("email", userRegisterRequest.getEmail());
-        map.put("password", userRegisterRequest.getPassword());
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
-
-        Integer userId = keyHolder.getKey().intValue();
-
-        return userId;
-    }
+    return userId;
+  }
 }
