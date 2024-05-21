@@ -7,6 +7,7 @@ import com.windsor.cyanraft.model.Product;
 import com.windsor.cyanraft.service.ProductService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +26,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
+  @Cacheable(cacheNames = "product", key = "#productId")
   public Product getProductById(Integer productId) {
     return productDao.getProductById(productId);
   }
