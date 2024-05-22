@@ -3,9 +3,10 @@ package com.windsor.cyanraft.controller;
 import com.windsor.cyanraft.dto.UserLoginRequest;
 import com.windsor.cyanraft.dto.UserRegisterRequest;
 import com.windsor.cyanraft.model.User;
+import com.windsor.cyanraft.producer.MailProducer;
 import com.windsor.cyanraft.service.UserService;
 import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
-  @Autowired private UserService userService;
+  private final UserService userService;
+  private final MailProducer mailProducer;
 
   @PostMapping("/register")
   public ResponseEntity<User> register(
@@ -26,6 +29,8 @@ public class UserController {
     Integer userId = userService.register(userRegisterRequest);
 
     User user = userService.getUserById(userId);
+
+    mailProducer.send(user.getEmail());
 
     return ResponseEntity.status(HttpStatus.CREATED).body(user);
   }

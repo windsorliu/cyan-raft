@@ -1,0 +1,63 @@
+{
+  "rabbit_version": "3.12.14",
+  "users": [
+    {
+      "name": "root",
+      "password": "0000",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator"
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "root",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "policies": [
+    {
+      "vhost": "/",
+      "name": "ha",
+      "pattern": "",
+      "apply-to": "queues",
+      "definition": {
+        "ha-mode":"all",
+        "ha-sync-mode":"automatic"
+      }
+    }
+  ],
+  "queues": [
+    {
+      "name": "mail_service_send_to_user_queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "cyan_raft_topic",
+      "vhost" :"/",
+      "type" :"topic",
+      "durable" :true
+    }
+  ],
+  "bindings": [
+    {
+      "source": "cyan_raft_topic",
+      "vhost": "/",
+      "destination": "mail_service_send_to_user_queue",
+      "destination_type": "queue",
+      "routing_key": "send_to_user",
+      "arguments": {}
+    }
+  ]
+}
